@@ -1,122 +1,227 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+/* ---------- この行より上には触らない！ ------------------------------------ */
+
+// 自分のID（日本語でもOK）       例）var id = 'tuesday12';
+var id = '';
+
+// 投稿する文章（\nで改行）       例）var toukoubun = 'だいじょぶます\nがんばるます';
+var toukoubun = '';
+
+// 投稿する画像のアドレス（URL）  例）var adoresu = 'https://cdn.pixabay.com/photo/2022/07/04/17/16/dove-7301617_960_720.jpg';
+var adoresu = '';
+
+/* ---------- この行より下には触らない！ ------------------------------------- */
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+  const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Instagram App Group Tuesday12',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      debugShowCheckedModeBanner: false,
+      home: const TopPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class TopPage extends StatefulWidget {
+  const TopPage({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<TopPage> createState() => _TopPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _TopPageState extends State<TopPage> {
+  var aikonUrl =
+      'https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~c5_720x720.jpeg?x-expires=1657958400&x-signature=JpUGyh8lfsF8Rjh0AvK%2FVXHlX%2BQ%3D';
+  final iineId = 'GroupTuesday12';
+  final hiduke = '${DateTime.now().month}月${DateTime.now().day}日';
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Widget userIcon({required String url, double radius = 16.0}) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundImage: NetworkImage(url),
+      onBackgroundImageError:
+          (Object object, StackTrace? stackTrace) =>
+              Container(color: Colors.red),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+  PreferredSizeWidget? instagramAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+      elevation: 1.0,
+      title: SizedBox(
+        height: kToolbarHeight,
+        width: 152.0,
+        child: Row(
+          children: [
+            Expanded(
+              child: Image.network(
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1200px-Instagram_logo.svg.png',
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 4.0),
+              child: const Icon(
+                Icons.keyboard_arrow_down_outlined,
+                size: 18.0,
+                color: Colors.black,
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      actions: const [
+        Icon(Icons.add_box_outlined),
+        SizedBox(width: 16.0),
+        Icon(Icons.favorite_border),
+        SizedBox(width: 16.0),
+        Icon(CupertinoIcons.chat_bubble_text),
+        SizedBox(width: 16.0),
+      ],
+    );
+  }
+
+  Widget itemHeader() {
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              userIcon(url: aikonUrl),
+              const SizedBox(width: 8.0),
+              Text(
+                id,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0,
+                ),
+              ),
+            ],
+          ),
+          const Icon(Icons.keyboard_control),
+        ],
+      ),
+    );
+  }
+
+  Widget buttonMenuBar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: const [
+              Icon(Icons.favorite_border),
+              SizedBox(width: 8.0),
+              Icon(CupertinoIcons.chat_bubble),
+              SizedBox(width: 8.0),
+              Icon(Icons.send_outlined),
+            ],
+          ),
+          const Icon(Icons.bookmark_border),
+        ],
+      ),
+    );
+  }
+
+  Widget postedItem() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        itemHeader(),
+        Image.network(
+          adoresu,
+          errorBuilder: (c, o, e) => Container(color: Colors.red),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buttonMenuBar(),
+              Text('いいね！：$iineId、他'),
+              Text(toukoubun, style: const TextStyle(color: Colors.black)),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        userIcon(url: aikonUrl, radius: 12.0),
+                        Container(
+                          margin: const EdgeInsets.only(left: 8.0),
+                          child: const Text('コメントを追加…'),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 72.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [Text('❤'), Text('🙌'), Text('⊕')],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(hiduke, style: const TextStyle(fontSize: 13.0)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget instagramTabBar() {
+    return BottomNavigationBar(
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.black,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      iconSize: 28.0,
+      type: BottomNavigationBarType.fixed,
+      items: <BottomNavigationBarItem>[
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.home_outlined),
+          label: '',
+        ),
+        const BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.ondemand_video_outlined),
+          label: '',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_bag_outlined),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: userIcon(url: aikonUrl, radius: 12.0),
+          label: '',
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: instagramAppBar(),
+      body: ListView(children: [postedItem()]),
+      bottomNavigationBar: instagramTabBar(),
     );
   }
 }
