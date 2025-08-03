@@ -13,30 +13,32 @@ final userPosts = <PostData>[
   PostData(
     user: user,
     text: '餃子を食べたよ！',
-    imageUrl: 'https://cdn.pixabay.com/photo/2021/09/18/11/15/japanese-food-6634881_1280.jpg',
+    imageUrl:
+        'https://cdn.pixabay.com/photo/2021/09/18/11/15/japanese-food-6634881_1280.jpg',
     createdDate: DateTime(2025, 8, 3),
   ),
 ];
 
 /* ---------- この行より下には触らない！ ------------------------------------- */
 
-/// 投稿データをまとめたクラスです。
+/// 投稿データのモデルクラスです。
 ///
 /// 投稿したユーザー、投稿文章、画像URL、作成日時を管理します。
+@immutable
 class PostData {
   /// 投稿したユーザー
-  User user;
+  final User user;
 
   /// 投稿の文章（改行は \n で）
-  String text;
+  final String text;
 
   /// 投稿画像のURL
-  String imageUrl;
+  final String imageUrl;
 
   /// 投稿日時
-  DateTime createdDate;
+  final DateTime createdDate;
 
-  PostData({
+  const PostData({
     required this.user,
     required this.text,
     required this.imageUrl,
@@ -47,14 +49,15 @@ class PostData {
 /// ユーザーのモデルクラスです。
 ///
 /// ユーザーIDとアイコン画像のURLを持ちます。
+@immutable
 class User {
   /// ユーザーのID
-  String userId;
+  final String userId;
 
   /// ユーザーのアイコン画像URL
-  String iconUrl;
+  final String iconUrl;
 
-  User({required this.userId, required this.iconUrl});
+  const User({required this.userId, required this.iconUrl});
 }
 
 /// ここからアプリがスタートします。
