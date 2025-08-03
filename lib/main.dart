@@ -114,9 +114,7 @@ class _TopPageState extends State<TopPage> {
               );
             }).toList(),
       ),
-      bottomNavigationBar: InstagramTabBar(
-        iconUrl: userPosts[0].user.iconUrl,
-      ),
+      bottomNavigationBar: InstagramTabBar(iconUrl: userPosts[0].user.iconUrl),
     );
   }
 }
@@ -278,31 +276,12 @@ class PostedItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const ButtonMenuBar(),
-              Text('Liked by: $likedBy and others'),
+              Text('いいね！：$likedBy、他'),
               Text(postData.text, style: const TextStyle(color: Colors.black)),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        UserIcon(url: postData.user.iconUrl, radius: 12.0),
-                        const SizedBox(width: 8.0),
-                        const Text('Add a comment...'),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 72.0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [Text('❤'), Text('🙌'), Text('⊕')],
-                      ),
-                    ),
-                  ],
-                ),
+              Text(
+                dateString,
+                style: const TextStyle(fontSize: 10.0, color: Colors.grey),
               ),
-              Text(dateString, style: const TextStyle(fontSize: 13.0)),
             ],
           ),
         ),
