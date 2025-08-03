@@ -9,7 +9,7 @@ final signedInUser = User(
       'https://cdn.pixabay.com/photo/2020/04/07/20/36/bunny-5014814_1280.jpg',
 );
 
-final userPosts = <PostData>[
+final posts = <PostData>[
   PostData(
     user: signedInUser,
     text: '投稿本文',
@@ -126,7 +126,7 @@ class _TopPageState extends State<TopPage> {
       appBar: const InstagramAppBar(),
       body: ListView(
         children:
-            userPosts.map((post) {
+            posts.map((post) {
               return PostedItem(
                 postData: post,
                 likedByUser: likedByUser,
@@ -134,7 +134,7 @@ class _TopPageState extends State<TopPage> {
               );
             }).toList(),
       ),
-      bottomNavigationBar: InstagramTabBar(iconUrl: userPosts[0].user.iconUrl!),
+      bottomNavigationBar: InstagramTabBar(iconUrl: posts[0].user.iconUrl!),
     );
   }
 }
