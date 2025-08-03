@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 /* ---------- この行より上には触らない！ ------------------------------------ */
 
+/// サインイン中のユーザー。
 final signedInUser = User(
   userId: 'user_id',
   iconUrl:
       'https://cdn.pixabay.com/photo/2020/04/07/20/36/bunny-5014814_1280.jpg',
 );
 
+/// タイムラインの投稿一覧のList。
 final posts = <PostData>[
   PostData(
     user: signedInUser,
@@ -21,6 +23,7 @@ final posts = <PostData>[
   ),
 ];
 
+/// いいねをしたユーザー。
 final likedByUser = User(
   userId: 'liked_by_user_id',
   iconUrl: 'https://example.com/icon.png',
