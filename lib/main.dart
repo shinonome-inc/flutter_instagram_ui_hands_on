@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 
 /* ---------- この行より上には触らない！ ------------------------------------ */
 
-final signedInUser = User(userId: 'ああ', iconUrl: '');
+final user = User(userId: 'ああ', iconUrl: '');
 
-final signedInUserPost = PostData(
-  user: signedInUser,
-  text: 'あいうえお',
-  imageUrl: '',
-  createdDate: DateTime.now(),
-);
+final userPosts = <PostData>[
+  PostData(
+    user: user,
+    text: 'あいうえお',
+    imageUrl: '',
+    createdDate: DateTime.now(),
+  ),
+];
 
 /* ---------- この行より下には触らない！ ------------------------------------- */
 
@@ -103,16 +105,17 @@ class _TopPageState extends State<TopPage> {
     return Scaffold(
       appBar: const InstagramAppBar(),
       body: ListView(
-        children: [
-          PostedItem(
-            postData: signedInUserPost,
-            likedBy: likedBy,
-            dateString: formatDate(signedInUserPost.createdDate),
-          ),
-        ],
+        children:
+            userPosts.map((post) {
+              return PostedItem(
+                postData: post,
+                likedBy: likedBy,
+                dateString: formatDate(post.createdDate),
+              );
+            }).toList(),
       ),
       bottomNavigationBar: InstagramTabBar(
-        iconUrl: signedInUserPost.user.iconUrl,
+        iconUrl: userPosts[0].user.iconUrl,
       ),
     );
   }
