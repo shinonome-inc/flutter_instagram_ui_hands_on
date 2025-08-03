@@ -3,19 +3,53 @@ import 'package:flutter/material.dart';
 
 /* ---------- この行より上には触らない！ ------------------------------------ */
 
-/// 自分のID（名前やニックネーム）をここに書きます。
-/// 例：var id = 'tuesday12';
-var id = '';
+final signedInUser = User(userId: 'ああ', iconUrl: '');
 
-/// 投稿する文章（改行したいときは \n を使います）をここに書きます。
-/// 例：var toukoubun = 'だいじょぶます\nがんばるます';
-var toukoubun = '';
-
-/// 投稿する画像のURLをここに書きます。
-/// 例：var adoresu = 'https://cdn.pixabay.com/photo/2022/07/04/17/16/dove-7301617_960_720.jpg';
-var adoresu = '';
+final signedInUserPost = PostData(
+  user: signedInUser,
+  text: 'あいうえお',
+  imageUrl: '',
+  createdDate: DateTime.now(),
+);
 
 /* ---------- この行より下には触らない！ ------------------------------------- */
+
+/// 投稿データをまとめたクラスです。
+///
+/// 投稿したユーザー、投稿文章、画像URL、作成日時を管理します。
+class PostData {
+  /// 投稿したユーザー
+  User user;
+
+  /// 投稿の文章（改行は \n で）
+  String text;
+
+  /// 投稿画像のURL
+  String imageUrl;
+
+  /// 投稿日時
+  DateTime createdDate;
+
+  PostData({
+    required this.user,
+    required this.text,
+    required this.imageUrl,
+    required this.createdDate,
+  });
+}
+
+/// ユーザーのモデルクラスです。
+///
+/// ユーザーIDとアイコン画像のURLを持ちます。
+class User {
+  /// ユーザーのID
+  String userId;
+
+  /// ユーザーのアイコン画像URL
+  String iconUrl;
+
+  User({required this.userId, required this.iconUrl});
+}
 
 /// ここからアプリがスタートします。
 void main() {
@@ -57,10 +91,12 @@ class TopPage extends StatefulWidget {
 /// 投稿に必要なデータを用意して、
 /// 画面に表示します。
 class _TopPageState extends State<TopPage> {
-  var aikonUrl =
-      'https://p16-sign-va.tiktokcdn.com/musically-maliva-obj/1594805258216454~c5_720x720.jpeg?x-expires=1657958400&x-signature=JpUGyh8lfsF8Rjh0AvK%2FVXHlX%2BQ%3D';
-  final iineId = 'GroupTuesday12';
-  final hiduke = '${DateTime.now().month}月${DateTime.now().day}日';
+  final likedBy = 'いいねした人';
+
+  // 日付を「8月3日」形式で文字列化するヘルパー関数
+  String formatDate(DateTime date) {
+    return '${date.month}月${date.day}日';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,16 +105,15 @@ class _TopPageState extends State<TopPage> {
       body: ListView(
         children: [
           PostedItem(
-            id: id,
-            comment: toukoubun,
-            imageUrl: adoresu,
-            iconUrl: aikonUrl,
-            iineId: iineId,
-            date: hiduke,
+            postData: signedInUserPost,
+            likedBy: likedBy,
+            dateString: formatDate(signedInUserPost.createdDate),
           ),
         ],
       ),
-      bottomNavigationBar: InstagramTabBar(iconUrl: aikonUrl),
+      bottomNavigationBar: InstagramTabBar(
+        iconUrl: signedInUserPost.user.iconUrl,
+      ),
     );
   }
 }
@@ -149,10 +184,10 @@ class InstagramAppBar extends StatelessWidget implements PreferredSizeWidget {
 ///
 /// ユーザーのアイコンと名前、右端のアイコンが並びます。
 class ItemHeader extends StatelessWidget {
-  final String id;
+  final String userId;
   final String iconUrl;
 
-  const ItemHeader({super.key, required this.id, required this.iconUrl});
+  const ItemHeader({super.key, required this.userId, required this.iconUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +201,7 @@ class ItemHeader extends StatelessWidget {
               UserIcon(url: iconUrl),
               const SizedBox(width: 8.0),
               Text(
-                id,
+                userId,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16.0,
@@ -210,21 +245,15 @@ class ButtonMenuBar extends StatelessWidget {
 
 /// 投稿全体（ヘッダー、画像、いいねなど）をまとめて表示するクラスです。
 class PostedItem extends StatelessWidget {
-  final String id;
-  final String comment;
-  final String imageUrl;
-  final String iconUrl;
-  final String iineId;
-  final String date;
+  final PostData postData;
+  final String likedBy;
+  final String dateString;
 
   const PostedItem({
     super.key,
-    required this.id,
-    required this.comment,
-    required this.imageUrl,
-    required this.iconUrl,
-    required this.iineId,
-    required this.date,
+    required this.postData,
+    required this.likedBy,
+    required this.dateString,
   });
 
   @override
@@ -232,9 +261,12 @@ class PostedItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ItemHeader(id: id, iconUrl: iconUrl),
+        ItemHeader(
+          userId: postData.user.userId,
+          iconUrl: postData.user.iconUrl,
+        ),
         Image.network(
-          imageUrl,
+          postData.imageUrl,
           errorBuilder: (context, _, __) => Container(color: Colors.red),
         ),
         Container(
@@ -243,8 +275,8 @@ class PostedItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const ButtonMenuBar(),
-              Text('いいね！：$iineId、他'),
-              Text(comment, style: const TextStyle(color: Colors.black)),
+              Text('Liked by: $likedBy and others'),
+              Text(postData.text, style: const TextStyle(color: Colors.black)),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
@@ -252,9 +284,9 @@ class PostedItem extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        UserIcon(url: iconUrl, radius: 12.0),
+                        UserIcon(url: postData.user.iconUrl, radius: 12.0),
                         const SizedBox(width: 8.0),
-                        const Text('コメントを追加…'),
+                        const Text('Add a comment...'),
                       ],
                     ),
                     SizedBox(
@@ -267,7 +299,7 @@ class PostedItem extends StatelessWidget {
                   ],
                 ),
               ),
-              Text(date, style: const TextStyle(fontSize: 13.0)),
+              Text(dateString, style: const TextStyle(fontSize: 13.0)),
             ],
           ),
         ),
