@@ -3,21 +3,28 @@ import 'package:flutter/material.dart';
 
 /* ---------- この行より上には触らない！ ------------------------------------ */
 
-final user = User(
-  userId: 'うさぎ',
+final signedInUser = User(
+  userId: 'user_id',
   iconUrl:
       'https://cdn.pixabay.com/photo/2020/04/07/20/36/bunny-5014814_1280.jpg',
 );
 
 final userPosts = <PostData>[
   PostData(
-    user: user,
-    text: '餃子を食べたよ！',
+    user: signedInUser,
+    text: '投稿本文',
     imageUrl:
         'https://cdn.pixabay.com/photo/2021/09/18/11/15/japanese-food-6634881_1280.jpg',
     createdDate: DateTime(2025, 8, 3),
+    likesCount: 0,
+    commentCount: 0,
   ),
 ];
+
+final likedByUser = User(
+  userId: 'liked_by_user_id',
+  iconUrl: 'https://example.com/icon.png',
+);
 
 /* ---------- この行より下には触らない！ ------------------------------------- */
 
@@ -38,11 +45,19 @@ class PostData {
   /// 投稿日時
   final DateTime createdDate;
 
+  /// いいね数（0以上）
+  final int likesCount;
+
+  /// コメント数（0以上）
+  final int commentCount;
+
   const PostData({
     required this.user,
     required this.text,
     required this.imageUrl,
     required this.createdDate,
+    required this.likesCount,
+    required this.commentCount,
   });
 }
 
@@ -55,9 +70,9 @@ class User {
   final String userId;
 
   /// ユーザーのアイコン画像URL
-  final String iconUrl;
+  final String? iconUrl;
 
-  const User({required this.userId, required this.iconUrl});
+  const User({required this.userId, this.iconUrl});
 }
 
 /// ここからアプリがスタートします。
@@ -100,8 +115,6 @@ class TopPage extends StatefulWidget {
 /// 投稿に必要なデータを用意して、
 /// 画面に表示します。
 class _TopPageState extends State<TopPage> {
-  final likedBy = 'いいねした人';
-
   // 日付を「8月3日」形式で文字列化するヘルパー関数
   String formatDate(DateTime date) {
     return '${date.month}月${date.day}日';
@@ -116,12 +129,12 @@ class _TopPageState extends State<TopPage> {
             userPosts.map((post) {
               return PostedItem(
                 postData: post,
-                likedBy: likedBy,
+                likedByUser: likedByUser,
                 dateString: formatDate(post.createdDate),
               );
             }).toList(),
       ),
-      bottomNavigationBar: InstagramTabBar(iconUrl: userPosts[0].user.iconUrl),
+      bottomNavigationBar: InstagramTabBar(iconUrl: userPosts[0].user.iconUrl!),
     );
   }
 }
@@ -226,7 +239,9 @@ class ItemHeader extends StatelessWidget {
 
 /// いいねやコメント、シェアのボタンが並ぶ部分を作るクラスです。
 class ButtonMenuBar extends StatelessWidget {
-  const ButtonMenuBar({super.key});
+  const ButtonMenuBar({super.key, required this.postData});
+
+  final PostData postData;
 
   @override
   Widget build(BuildContext context) {
@@ -236,10 +251,20 @@ class ButtonMenuBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            children: const [
+            children: [
               Icon(Icons.favorite_border),
+              if (postData.likesCount > 0)
+                Padding(
+                  padding: EdgeInsets.only(left: 4.0),
+                  child: Text('${postData.likesCount}'),
+                ),
               SizedBox(width: 8.0),
               Icon(CupertinoIcons.chat_bubble),
+              if (postData.commentCount > 0)
+                Padding(
+                  padding: EdgeInsets.only(left: 4.0),
+                  child: Text('${postData.commentCount}'),
+                ),
               SizedBox(width: 8.0),
               Icon(Icons.send_outlined),
             ],
@@ -254,13 +279,13 @@ class ButtonMenuBar extends StatelessWidget {
 /// 投稿全体（ヘッダー、画像、いいねなど）をまとめて表示するクラスです。
 class PostedItem extends StatelessWidget {
   final PostData postData;
-  final String likedBy;
+  final User likedByUser;
   final String dateString;
 
   const PostedItem({
     super.key,
     required this.postData,
-    required this.likedBy,
+    required this.likedByUser,
     required this.dateString,
   });
 
@@ -271,7 +296,7 @@ class PostedItem extends StatelessWidget {
       children: [
         ItemHeader(
           userId: postData.user.userId,
-          iconUrl: postData.user.iconUrl,
+          iconUrl: postData.user.iconUrl!,
         ),
         Image.network(
           postData.imageUrl,
@@ -282,8 +307,8 @@ class PostedItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const ButtonMenuBar(),
-              Text('いいね！：$likedBy、他'),
+              ButtonMenuBar(postData: postData),
+              Text('いいね！：${likedByUser.userId}、他'),
               Text(postData.text, style: const TextStyle(color: Colors.black)),
               Text(
                 dateString,
