@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 
 /* ---------- この行より上には触らない！ ------------------------------------ */
 
-final user = User(userId: 'ああ', iconUrl: '');
+final user = User(
+  userId: 'うさぎ',
+  iconUrl:
+      'https://cdn.pixabay.com/photo/2020/04/07/20/36/bunny-5014814_1280.jpg',
+);
 
 final userPosts = <PostData>[
   PostData(
     user: user,
-    text: 'あいうえお',
-    imageUrl: '',
-    createdDate: DateTime.now(),
+    text: '餃子を食べたよ！',
+    imageUrl: 'https://cdn.pixabay.com/photo/2021/09/18/11/15/japanese-food-6634881_1280.jpg',
+    createdDate: DateTime(2025, 8, 3),
   ),
 ];
 
